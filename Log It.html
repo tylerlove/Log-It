@@ -1,0 +1,301 @@
+<!DOCTYPE html> 
+<html>
+	<head>
+		<title>Page Title</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="jquery.mobile-1.4.3.min.css" />
+		<link rel = "stylesheet" type = "text/css" href = "stylesheet Hackathon.css">
+		<script src="jquery-1.11.1.min.js"></script>
+		<script src="jquery.mobile-1.4.3.min.js"></script>
+		<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js' type='text/javascript'/></script>
+		<script src="https://cdn.firebase.com/js/client/1.0.19/firebase.js"></script>>
+		<script>
+		/*$(function(){
+			$('.fadein img:gt(0)').hide();
+			setInterval(function(){
+			  $('.fadein :first-child').fadeOut()
+				 .next('img').fadeIn()
+				 .end().appendTo('.fadein');}, 
+			  3000);
+		});*/
+		
+		var myFirebaseRef = new Firebase("https://glaring-heat-9844.firebaseio.com/");
+		myFirebaseRef.on('child_added', function (snapshot) {
+			var allthestuff = snapshot.val();
+			console.log(allthestuff);
+			showTasks(allthestuff);
+		})
+	
+		//var myList = [];
+		var totalhours = [];
+		
+		function refresh(){
+			location.reload();
+		}
+		
+		 $(function(){
+			$('.faderandom > :gt(0)').hide();
+			setInterval(function(){
+				var rand = Math.floor(Math.random() * ($('.faderandom').children().length-1));
+				$('.faderandom > :first-child').appendTo('.faderandom').fadeOut();
+				$('.faderandom > *').eq(rand).prependTo('.faderandom').fadeIn();
+			}, 3000);
+		});
+
+        function addItem(){
+
+
+        var taskToBeAdded = $("#newtask").val();
+        //alert(taskToBeAdded);
+                if(taskToBeAdded.indexOf('@') === -1 ){
+                        alert(" youre missing a @");
+                }
+                else {
+                        toDoDB.push(taskToBeAdded);
+                }
+
+
+
+        }
+
+       function add(){
+			if ((document.forms["myForm"]["Name"].value !="") && 
+			(document.forms["myForm"]["Phone"].value !="")&&
+			(document.forms["myForm"]["Email"].value != "") &&
+			(document.forms["myForm"]["Location"].value != "") &&
+			(document.forms["myForm"]["ThingsDone"].value != "") &&
+			(document.forms["myForm"]["hours"].value != "") &&
+			(document.forms["myForm"]["date"].value != "") &&
+			(document.forms["myForm"]["file"].value) != ""){
+				var name = document.forms["myForm"]["Name"].value;
+				var phone = document.forms["myForm"]["Phone"].value;
+				var email = document.forms["myForm"]["Email"].value;
+				var location = document.forms["myForm"]["Location"].value;
+				var thingsdid = document.forms["myForm"]["ThingsDone"].value;
+				var hours = document.forms["myForm"]["hours"].value;
+				var date = document.forms["myForm"]["date"].value;
+				var file = document.forms["myForm"]["file"].value;
+				/*myList.push(name);
+				myList.push(phone);
+				myList.push(email);
+				myList.push(location);
+				myList.push(thingsdid);
+				myList.push(hours);
+				myList.push(date);
+				myList.push(file);*/
+				myFirebaseRef.push({Name: name, Phone: phone, Email: email, Location: location, ThingsDone: thingsdid, 
+				Hours: hours, Date: date, Signature: file});
+				name = "";
+				phone = "";
+				email = "";
+				location = "";
+				thingsdid = "";
+				hours = "";
+				date = "";
+				file = "";
+				//showTasks(myList);
+				
+			}
+				
+			else{
+				alert("You must fill in all textboxes!");
+				}
+		}
+		function showTasks(list){
+			$("#totalhours").empty();
+			$("#list").append("<li> Name: " + list.Name + "<br> Phone Number: " + list.Phone + "<br> Email: " + 
+			list.Email + "<br> Location: " + list.Location + "<br> Things Done: " + list.ThingsDone + "<br> Hours: " + list.Hours + "<br> Date:" +
+			list.Date + "<br> Signature: <img src= "+list.Signature+" " + "</li>");		
+			
+			var x = + list.Hours;
+			console.log(x);
+			totalhours = + totalhours + x;
+			
+
+			//myList.splice(0,myList.length);
+			$("#totalhours").append("<h4> Total Hours: " + totalhours + "</h4>");
+			$("#list").listview();
+			$("#list").listview( "refresh" );	
+
+		}
+		
+		function signup(object){
+			myFirebaseRef.push({NameOfUser: document.forms["signupform"]["nameofuser"], UserName: document.forms["signupform"]["username"],
+			School: document.forms["signupform"]["school"]});
+			console.log("name: " + object.NameOfUser + "username: " + object.UserName + "school: " + object.School);
+		}
+		
+		function login(){
+			alert("login");
+		}
+		</script>
+	</head>
+	<body>
+	
+	<!--<div data-role = "page" align = "center" id = "logIn">
+	<h1> Please Log in </h1>
+	<form id="myForm"> 
+			Username: <input type="text" name="email" /> 
+			Password: <input type="text" name="password" />
+			<input type="button" value="Log In" data-theme="b" onclick="add()"/>
+	</form>
+	</div>-->
+	
+		<div data-role="page" id = "homePage">
+			<div data-role="header" style = "background-color: 99CCFF;" data-position="fixed">
+				<div class = "logo">
+					<a href = "#homePage"><img src = "Logo.png" align = "middle" style="width:130px; height:auto;"/></a>
+					<a href = "#aboutPage" style = "text-decoration: none"> Service Log </a>
+					<a href = "#getInvolved" style = "padding-left: 50px; text-decoration: none;"> Log It! </a>
+					<a href = "#yourProfile" style = "padding-left: 50px; text-decoration: none;"> Your Profile </a>
+					<a href = "#loginpage" style = "padding-left: 50px; text-decoration: none;"> Login </a>
+					<a href = "#signuppage" style = "padding-left: 50px; text-decoration: none;"> Sign Up </a>
+				</div>
+				
+			</div>
+			
+			<div role="main" class="ui-content">
+				<div class="faderandom" style="width: 100%;" >
+					<a> <img src="http://www.sacredheartpioneers.com/sports/m-lacros/2013-14/Park_Clean_Photo_thumb.jpg"></a>
+					<a><img src="http://levelandflowsolutions.magnetrol.com/Portals/195594/images/Magnetrol%20Community%20Service.jpg"></a>
+					<a><img src="http://www.marianuniversity.edu/uploadedImages/_marianuniversityedu/Academic_Programs/CommunitySvcRaking-(4).jpg?n=2518"></a>
+					
+				</div>
+				
+				
+				
+				
+				
+			</div>
+			
+			
+			<!--<div data-role="footer" class = "footer">
+				<h4>Page Footer</h4>
+			</div>-->
+		</div>
+		<div data-role = "page" style = "background-color:white;" id = "signuppage">
+		 <h1 align="center">Sign Up</h1>
+            <div data-role="header" style = "background-color: 99CCFF;" data-position="fixed">
+				<div class = "logo">
+                    <a href = "#homePage"><img src = "Logo.png" align = "middle" style="width:130px; height:auto;"/></a>
+					<a href = "#aboutPage" style = "text-decoration: none"> Service Log </a>				
+					<a href = "#getInvolved" style = "padding-left: 50px; text-decoration: none;"> Log It! </a>
+					<a href = "#yourProfile" style = "padding-left: 50px; text-decoration: none;"> Your Profile </a>
+                    <a href = "#loginpage" style = "padding-left: 50px; text-decoration: none;"> Login </a>
+					<a href = "#signuppage" style = "padding-left: 50px; text-decoration: none;"> Sign Up </a>
+                </div>
+            </div>
+			<form id="signupform"> 
+				Username: <input type="text" name="username">
+				Name: <input type="text" name="nameofuser">
+				School: <input type="text" name="school">
+				<input type="button" value="Sign Up!" data-theme="b" onclick="signup(allthestuff)"/>
+			<form>
+		</div>
+		
+		<div data-role = "page" style = "background-color:white;" id = "loginpage">
+		 <h1 align="center">Login</h1>
+            <div data-role="header" style = "background-color: 99CCFF;" data-position="fixed">
+				<div class = "logo">
+                    <a href = "#homePage"><img src = "Logo.png" align = "middle" style="width:130px; height:auto;"/></a>
+					<a href = "#aboutPage" style = "text-decoration: none"> Service Log </a>				
+					<a href = "#getInvolved" style = "padding-left: 50px; text-decoration: none;"> Log It! </a>
+					<a href = "#yourProfile" style = "padding-left: 50px; text-decoration: none;"> Your Profile </a>
+                    <a href = "#loginpage" style = "padding-left: 50px; text-decoration: none;"> Login </a>
+					<a href = "#signuppage" style = "padding-left: 50px; text-decoration: none;"> Sign Up </a>
+                </div>
+            </div>
+			<form id="loginusername">
+			Username: <input type="text" name="username">
+			<input type="button" value="Login!" data-theme="b" onclick="login()"/>
+			</form>
+		</div>
+		
+<div data-role = "page" style = "background-color:white;" id = "yourProfile">
+	 <div data-role="header" style = "background-color: 99CCFF;" data-position="fixed">
+				<div class = "logo">
+					<a href = "#homePage"><img src = "Logo.png" align = "middle" style="width:130px; height:auto;"/></a>
+					<a href = "#aboutPage" style = "text-decoration: none"> Service Log </a>
+					<a href = "#getInvolved" style = "padding-left: 50px; text-decoration: none;"> Log It! </a>
+					<a href = "#yourProfile" style = "padding-left: 50px; text-decoration: none;"> Your Profile </a>
+					<a href = "#loginpage" style = "padding-left: 50px; text-decoration: none;"> Login </a>
+					<a href = "#signuppage" style = "padding-left: 50px; text-decoration: none;"> Sign Up </a>
+				</div>
+				
+			</div>
+			<p>hey!</p>
+	 </div>
+	 
+	 
+		<div data-role="page" style = "background-color: white;" id="aboutPage">
+
+			<div data-role="header" style = "background-color: 99CCFF;" data-position="fixed">
+				<div class = "logo">
+					<a href = "#homePage"><img src = "Logo.png" align = "middle" style="width:130px; height:auto;"/></a>
+					<a href = "#aboutPage" style = "text-decoration: none"> Service Log </a>
+					<a href = "#getInvolved" style = "padding-left: 50px; text-decoration: none;"> Log It! </a>
+					<a href = "#yourProfile" style = "padding-left: 50px; text-decoration: none;"> Your Profile </a>
+					<a href = "#loginpage" style = "padding-left: 50px; text-decoration: none;"> Login </a>
+					<a href = "#signuppage" style = "padding-left: 50px; text-decoration: none;"> Sign Up </a>
+				</div>
+				
+			</div>
+
+			<div role="main" class="ui-content" >
+				<div>
+					<h2 style = "text-align: center;">Your Community Service Log</h2> 
+					<p align = "center" id = "totalhours"> Total Hours: 0</p>
+					<ul data-role="listview" data-split-icon="check" data-inset="true" id="list" style="white-space:normal">
+					</ul>
+				</div>
+				
+				
+			</div>
+			
+
+		</div>
+		
+		
+
+		
+		 <div data-role = "page" style = "background-color:white;" id = "getInvolved">
+                <h1 align="center">Log It!</h1>
+                    <div data-role="header" style = "background-color: 99CCFF;" data-position="fixed">
+                        <div class = "logo">
+                            <a href = "#homePage"><img src = "Logo.png" align = "middle" style="width:130px; height:auto;"/></a>
+							<a href = "#aboutPage" style = "text-decoration: none"> Service Log </a>				
+							<a href = "#getInvolved" style = "padding-left: 50px; text-decoration: none;"> Log It! </a>
+							<a href = "#yourProfile" style = "padding-left: 50px; text-decoration: none;"> Your Profile </a>
+                            <a href = "#loginpage" style = "padding-left: 50px; text-decoration: none;"> Login </a>
+							<a href = "#signuppage" style = "padding-left: 50px; text-decoration: none;"> Sign Up </a>                    
+                        </div>
+                    </div>
+			<p>Please input your information here to log your community service experiences. </p>
+		<form id="myForm"> 
+			<label for="date" ></label>
+			Date:<input type="date" name="date" id="date" value="" class="nothours">
+			Location of Service: <input type="text" name="Location" class="nothours"/>
+			<label for="slider">  </label>		
+			Hours of Service:<input type="range" name="hours" id="hours" value="15" min="0" max="24">
+			What did you do?:<input type="text" name="ThingsDone" class="nothours"/>
+			Name of Supervisor: <input type="text" name="Name" class="nothours"/> 
+			Email of Supervisor: <input type="text" name="Email" class="nothours"/>
+			Phone Number of Supervisor: <input type="text" name="Phone" class="nothours"/>
+			
+			Signature:
+			<p> Please insert the URL for the photo with your supervisor's signature </p> 
+			<input type="text" name="file" class="nothours"/>
+			<!--<div><a data-role = "button" href = "#certainDate"> Choose Specific Date</a></div>-->
+			<input type="button" value="Submit!" data-theme="b" onclick="add()"/> 
+		</form>
+		
+		<ol data-role="listview" data-split-icon="check" data-inset="true" id="list" >
+	</div>     
+
+    </div>
+		
+        
+		
+	
+	</body>
+</html>
